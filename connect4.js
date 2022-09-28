@@ -28,9 +28,9 @@ function makeBoard() {
 
 function makeHtmlBoard() {
   // TODO: get "htmlBoard" variable from the item in HTML w/ID of "board"
-  let htmlBoard = document.getElementById("board");
+  const htmlBoard = document.getElementById("board");
   // TODO: creates first row and adds event listener for player move
-  let top = document.createElement("tr");
+  const top = document.createElement("tr");
   top.setAttribute("id", "column-top");
   top.addEventListener("click", handleClick);
 
@@ -148,7 +148,9 @@ function checkForWin() {
     // TODO: Check four cells to see if they're all legal & all color of current
     // player
     for (let i = 0; i < cells.length; i++) {
-      if (cells[i] !== currPlayer) return false;
+      const [y, x] = cells[i];
+      if (board[y][x] !== currPlayer) return false;
+
     }
     return true;
   }
@@ -169,12 +171,28 @@ function checkForWin() {
         [y, x + 2],
         [y, x + 3],
       ];
-      let vert;
-      let diagDL;
-      let diagDR;
+
+      let vert = [
+        [y, x],
+        [y + 1, x],
+        [y + 2, x],
+        [y + 3, x]];
+
+      let diagDL = [
+        [y, x],
+        [y - 1, x - 1],
+        [y - 2, x - 2],
+        [y - 3, x - 3]];
+
+      let diagDR = [
+        [y, x],
+        [y + 1, x + 1],
+        [y + 2, x + 2],
+        [y + 3, x + 3]];
 
       // find winner (only checking each win-possibility as needed)
       if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
+
         return true;
       }
     }
