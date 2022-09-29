@@ -137,7 +137,7 @@ function handleClick(evt) {
   }
 }
 
-/** check for tie, look for all non-nulls */
+/** check for tie, look for all non-nulls, return true if tie */
 function checkForTie() {
   return board.every((row) => row.every((cell) => cell !== null));
 }
