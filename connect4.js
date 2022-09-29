@@ -10,6 +10,7 @@
 const WIDTH = 7;
 const HEIGHT = 6;
 
+let winner = false; // set variable for if winner
 let currPlayer = 1; // active player: 1 or 2
 let board = []; // array of rows, each row is array of cells  (board[y][x])
 
@@ -36,7 +37,7 @@ function makeHtmlBoard() {
 
   // TODO: creates columns equal to length of WIDTH, gives each column id of x (0 - 6)
   for (let x = 0; x < WIDTH; x++) {
-    let headCell = document.createElement("td");
+    const headCell = document.createElement("td");
     headCell.setAttribute("id", x);
     top.append(headCell);
   }
@@ -67,9 +68,9 @@ function makeHtmlBoard() {
 
 function findSpotForCol(x) {
   // TODO: write the real version of this, rather than always returning 5
-  for (let i = HEIGHT - 1; i >= 0; i--) {
-    if (board[i][x] === null) {
-      return i;
+  for (let y = HEIGHT - 1; y >= 0; y--) {
+    if (board[y][x] === null) {
+      return y;
     }
   }
   return null;
@@ -85,31 +86,26 @@ function placeInTable(y, x) {
   console.log({ piece });
   document.getElementById(`${y}-${x}`).append(piece);
 
-  // switch players
-  // TODO: switch currPlayer 1 <-> 2
-  // switch players
-  if (currPlayer === 1) {
-    currPlayer = 2;
-  } else {
-    currPlayer = 1;
-  }
+
 }
 
 /** endGame: announce game end */
 
 function endGame(msg) {
   // TODO: pop up alert message
-  alert(msg);
+  setTimeout(() => alert(msg), 50);
 }
 
 /** handleClick: handle click of column top to play piece */
 
 function handleClick(evt) {
+  if (winner) return
+
   // get x from ID of clicked cell
-  let x = +evt.target.id;
+  const x = +evt.target.id;
 
   // get next spot in column (if none, ignore click)
-  let y = findSpotForCol(x);
+  const y = findSpotForCol(x);
   if (y === null) {
     return;
   }
@@ -128,6 +124,16 @@ function handleClick(evt) {
   // TODO: check if all cells in board are filled; if so call, call endGame
   if (checkForTie()) {
     return endGame("Tie");
+  }
+
+  // switch players
+  // TODO: switch currPlayer 1 <-> 2
+  // switch players
+  // TODO: move code into handleClick or make function
+  if (currPlayer === 1) {
+    currPlayer = 2;
+  } else {
+    currPlayer = 1;
   }
 }
 
@@ -149,9 +155,11 @@ function checkForWin() {
     // player
     for (let i = 0; i < cells.length; i++) {
       const [y, x] = cells[i];
+      if (!(y in board) || !(x in board[y])) return false;
       if (board[y][x] !== currPlayer) return false;
 
     }
+    winner = true;
     return true;
   }
 
@@ -165,26 +173,26 @@ function checkForWin() {
       // each should be an array of 4 cell coordinates:
       // [ [y, x], [y, x], [y, x], [y, x] ]
 
-      let horiz = [
+      const horiz = [
         [y, x],
         [y, x + 1],
         [y, x + 2],
         [y, x + 3],
       ];
 
-      let vert = [
+      const vert = [
         [y, x],
         [y + 1, x],
         [y + 2, x],
         [y + 3, x]];
 
-      let diagDL = [
+      const diagDL = [
         [y, x],
         [y - 1, x - 1],
         [y - 2, x - 2],
         [y - 3, x - 3]];
 
-      let diagDR = [
+      const diagDR = [
         [y, x],
         [y + 1, x + 1],
         [y + 2, x + 2],
